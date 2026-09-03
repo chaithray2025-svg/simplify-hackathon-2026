@@ -1,0 +1,1 @@
+# simplify-hackathon-2026
