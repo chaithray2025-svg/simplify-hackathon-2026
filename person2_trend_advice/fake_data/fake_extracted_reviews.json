@@ -1,0 +1,25 @@
+[
+  {"review_id": "r001", "business_id": "biz_test", "week": "2026-W01", "topic": "wait_time", "sentiment": "negative", "entities": ["lunch rush"], "language": "en", "quote": "Waited 15 minutes just to order at lunch", "date": "2026-01-05"},
+  {"review_id": "r002", "business_id": "biz_test", "week": "2026-W01", "topic": "wait_time", "sentiment": "negative", "entities": ["lunch rush"], "language": "en", "quote": "Service was slow during the lunch crowd", "date": "2026-01-06"},
+
+  {"review_id": "r003", "business_id": "biz_test", "week": "2026-W02", "topic": "wait_time", "sentiment": "negative", "entities": ["lunch rush"], "language": "en", "quote": "20 min wait for a table, only two staff on lunch shift", "date": "2026-01-12"},
+  {"review_id": "r004", "business_id": "biz_test", "week": "2026-W02", "topic": "wait_time", "sentiment": "negative", "entities": ["lunch rush"], "language": "en", "quote": "Waited so long I almost left", "date": "2026-01-13"},
+  {"review_id": "r005", "business_id": "biz_test", "week": "2026-W02", "topic": "wait_time", "sentiment": "negative", "entities": ["lunch rush"], "language": "zh", "quote": "午餐时间等了很久", "date": "2026-01-14"},
+
+  {"review_id": "r006", "business_id": "biz_test", "week": "2026-W03", "topic": "wait_time", "sentiment": "negative", "entities": ["lunch rush", "12pm"], "language": "en", "quote": "25 minutes just to get a table around noon", "date": "2026-01-19"},
+  {"review_id": "r007", "business_id": "biz_test", "week": "2026-W03", "topic": "wait_time", "sentiment": "negative", "entities": ["lunch rush"], "language": "ms", "quote": "Lama sangat tunggu masa waktu makan tengahari", "date": "2026-01-20"},
+  {"review_id": "r008", "business_id": "biz_test", "week": "2026-W03", "topic": "wait_time", "sentiment": "negative", "entities": ["lunch rush"], "language": "en", "quote": "Staff overwhelmed at 12:30pm, waited forever", "date": "2026-01-21"},
+  {"review_id": "r009", "business_id": "biz_test", "week": "2026-W03", "topic": "wait_time", "sentiment": "negative", "entities": ["12:30pm"], "language": "en", "quote": "Half-hour wait during the lunch hour", "date": "2026-01-22"},
+  {"review_id": "r010", "business_id": "biz_test", "week": "2026-W03", "topic": "wait_time", "sentiment": "negative", "entities": ["lunch rush"], "language": "ta", "quote": "மதிய உணவு நேரத்தில் நீண்ட நேரம் காத்திருந்தேன்", "date": "2026-01-23"},
+
+  {"review_id": "r011", "business_id": "biz_test", "week": "2026-W01", "topic": "food_quality", "sentiment": "positive", "entities": ["laksa"], "language": "en", "quote": "The laksa was amazing, best I've had", "date": "2026-01-04"},
+  {"review_id": "r012", "business_id": "biz_test", "week": "2026-W02", "topic": "food_quality", "sentiment": "positive", "entities": ["laksa"], "language": "en", "quote": "Laksa is consistently excellent every visit", "date": "2026-01-11"},
+  {"review_id": "r013", "business_id": "biz_test", "week": "2026-W03", "topic": "food_quality", "sentiment": "positive", "entities": ["laksa"], "language": "zh", "quote": "叻沙真的很好吃", "date": "2026-01-18"},
+
+  {"review_id": "r014", "business_id": "biz_test", "week": "2026-W01", "topic": "cleanliness", "sentiment": "negative", "entities": ["restroom"], "language": "en", "quote": "Restroom wasn't very clean", "date": "2026-01-07"},
+  {"review_id": "r015", "business_id": "biz_test", "week": "2026-W02", "topic": "cleanliness", "sentiment": "negative", "entities": ["restroom"], "language": "en", "quote": "Same issue with the restroom as last time", "date": "2026-01-14"},
+  {"review_id": "r016", "business_id": "biz_test", "week": "2026-W03", "topic": "cleanliness", "sentiment": "positive", "entities": ["restroom"], "language": "en", "quote": "Restroom was clean this visit, improvement noticed", "date": "2026-01-20"},
+
+  {"review_id": "r017", "business_id": "biz_test", "week": "2026-W01", "topic": "staff_attitude", "sentiment": "negative", "entities": ["cashier"], "language": "en", "quote": "Cashier was a bit curt", "date": "2026-01-03"},
+  {"review_id": "r018", "business_id": "biz_test", "week": "2026-W03", "topic": "staff_attitude", "sentiment": "negative", "entities": ["cashier"], "language": "en", "quote": "Rude cashier again, not the first time", "date": "2026-01-17"}
+]
