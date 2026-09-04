@@ -1,0 +1,14 @@
+[
+  {
+    "review_id": "r006",
+    "review_text": "25 minutes just to get a table around noon",
+    "sentiment": "negative",
+    "language": "en"
+  },
+  {
+    "review_id": "r013",
+    "review_text": "叻沙真的很好吃",
+    "sentiment": "positive",
+    "language": "zh"
+  }
+]

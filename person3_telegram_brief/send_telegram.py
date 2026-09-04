@@ -30,6 +30,41 @@ def send_message(chat_id: str, text: str) -> dict:
     return resp.json()
 
 
+def send_reply_for_approval(chat_id: str, review_id: str, review_text: str, drafted_reply: str) -> dict:
+    """
+    Send a drafted reply with inline Approve/Reject buttons.
+
+    callback_data encodes both the action and the review_id (Telegram caps
+    callback_data at 64 bytes, so keep review_id short) — bot_listener.py
+    parses this back out when a button is tapped.
+    """
+    text = (
+        f"📝 *Drafted reply* (review `{review_id}`)\n\n"
+        f"_Original:_ {review_text}\n\n"
+        f"_Draft:_ {drafted_reply}"
+    )
+    reply_markup = {
+        "inline_keyboard": [
+            [
+                {"text": "✅ Approve", "callback_data": f"approve:{review_id}"},
+                {"text": "❌ Reject", "callback_data": f"reject:{review_id}"},
+            ]
+        ]
+    }
+    resp = requests.post(
+        f"https://api.telegram.org/bot{TOKEN}/sendMessage",
+        json={
+            "chat_id": chat_id,
+            "text": text,
+            "parse_mode": "Markdown",
+            "reply_markup": reply_markup,
+        },
+        timeout=10,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python3 send_telegram.py <chat_id>")

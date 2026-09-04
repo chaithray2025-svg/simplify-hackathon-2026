@@ -1,0 +1,13 @@
+[
+  {
+    "trend_flag_id": "tf001",
+    "topic": "wait_time",
+    "weeks": ["2026-W01", "2026-W02", "2026-W03"],
+    "weekly_counts": [2, 3, 5],
+    "supporting_quotes": [
+      {"quote": "25 minutes just to get a table around noon", "date": "2026-01-19"},
+      {"quote": "Half-hour wait during the lunch hour", "date": "2026-01-22"}
+    ],
+    "trend_summary": "Wait times have been rising for 3 weeks, with mentions increasing from 2 to 5 per week."
+  }
+]
