@@ -3,3 +3,4 @@ requests
 python-dotenv
 langgraph
 langchain-core
+langchain-aws
