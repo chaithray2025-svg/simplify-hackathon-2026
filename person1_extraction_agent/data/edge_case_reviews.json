@@ -1,0 +1,27 @@
+[
+  {
+    "review_id": "edge-001", "business_id": "sg-hawker-042", "source": "seed",
+    "review_date": "2026-08-20", "rating": 1, "author_name": "Singlish Sam",
+    "text": "Wah lau eh, wait until siao. Auntie say wait 5 min, end up 40 min sia. Food can eat lah but service like that not shiok."
+  },
+  {
+    "review_id": "edge-002", "business_id": "sg-hawker-042", "source": "seed",
+    "review_date": "2026-08-21", "rating": 1, "author_name": "Anon",
+    "text": "太慢了！！排队等了一个小时，food also cold already. Never again 🙄"
+  },
+  {
+    "review_id": "edge-003", "business_id": "sg-hawker-042", "source": "seed",
+    "review_date": "2026-08-22", "rating": 5, "author_name": "Anon",
+    "text": "🔥🔥🔥"
+  },
+  {
+    "review_id": "edge-004", "business_id": "sg-hawker-042", "source": "seed",
+    "review_date": "2026-08-23", "rating": null, "author_name": "Anon",
+    "text": "bad"
+  },
+  {
+    "review_id": "edge-005", "business_id": "sg-hawker-042", "source": "seed",
+    "review_date": "2026-08-24", "rating": 3, "author_name": "Anon",
+    "text": "10/10 food, 2/10 wait. Rounded to 3 stars."
+  }
+]

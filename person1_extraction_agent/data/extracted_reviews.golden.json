@@ -1,0 +1,353 @@
+[
+  {
+    "review_id": "seed-001", "business_id": "sg-hawker-042", "review_date": "2026-08-11",
+    "iso_week": "2026-W33", "model_id": "golden", "schema_version": 1,
+    "language": "en", "is_translated": false,
+    "text_en": "Came for lunch and waited almost 40 minutes for a plate of chicken rice. Food was fine but the wait is ridiculous for a hawker stall.",
+    "text_original": "Came for lunch and waited almost 40 minutes for a plate of chicken rice. Food was fine but the wait is ridiculous for a hawker stall.",
+    "sentiment": "negative", "rating": 2,
+    "topic": "wait_time", "secondary_topics": ["food_quality"],
+    "entities": [
+      {"kind": "wait_time", "value": "almost 40 minutes", "sentiment": "negative"},
+      {"kind": "menu_item", "value": "chicken rice", "sentiment": "neutral"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Waited almost 40 minutes for a plate of chicken rice at lunch.",
+    "confidence": 0.9
+  },
+  {
+    "review_id": "seed-002", "business_id": "sg-hawker-042", "review_date": "2026-08-14",
+    "iso_week": "2026-W33", "model_id": "golden", "schema_version": 1,
+    "language": "zh", "is_translated": true,
+    "text_en": "Queued for over half an hour to get the food; clearly understaffed at midday. The taste is okay, but the wait was too long.",
+    "text_original": "排队等了半个多小时才拿到食物，中午人手明显不够。味道还可以，但等太久了。",
+    "sentiment": "negative", "rating": 2,
+    "topic": "wait_time", "secondary_topics": ["service_attentiveness"],
+    "entities": [
+      {"kind": "wait_time", "value": "over half an hour", "sentiment": "negative"},
+      {"kind": "time_slot", "value": "midday", "sentiment": "negative"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Queued over half an hour for food; understaffed at midday.",
+    "confidence": 0.88
+  },
+  {
+    "review_id": "seed-003", "business_id": "sg-hawker-042", "review_date": "2026-08-12",
+    "iso_week": "2026-W33", "model_id": "golden", "schema_version": 1,
+    "language": "en", "is_translated": false,
+    "text_en": "The sambal here is incredible, best I have had in the east. Auntie was so warm and even remembered my order from last time.",
+    "text_original": "The sambal here is incredible, best I have had in the east. Auntie was so warm and even remembered my order from last time.",
+    "sentiment": "positive", "rating": 5,
+    "topic": "food_quality", "secondary_topics": ["staff_friendliness"],
+    "entities": [
+      {"kind": "menu_item", "value": "sambal", "sentiment": "positive"},
+      {"kind": "staff_role", "value": "auntie", "sentiment": "positive"}
+    ],
+    "time_slot": "unknown",
+    "actionable_quote": "The sambal is incredible and the auntie remembered my order.",
+    "confidence": 0.9
+  },
+  {
+    "review_id": "seed-004", "business_id": "sg-hawker-042", "review_date": "2026-08-15",
+    "iso_week": "2026-W33", "model_id": "golden", "schema_version": 1,
+    "language": "ms", "is_translated": true,
+    "text_en": "The table wasn't wiped, sticky with oil. The floor was dirty too. The food is tasty but hygiene needs attention.",
+    "text_original": "Meja tak dilap, lengket dengan minyak. Lantai pun kotor. Makanan sedap tapi kebersihan kena jaga.",
+    "sentiment": "mixed", "rating": 2,
+    "topic": "cleanliness", "secondary_topics": ["food_quality"],
+    "entities": [
+      {"kind": "location_area", "value": "table", "sentiment": "negative"},
+      {"kind": "location_area", "value": "floor", "sentiment": "negative"}
+    ],
+    "time_slot": "unknown",
+    "actionable_quote": "Table not wiped and sticky with oil; floor dirty.",
+    "confidence": 0.9
+  },
+  {
+    "review_id": "seed-005", "business_id": "sg-hawker-042", "review_date": "2026-08-18",
+    "iso_week": "2026-W34", "model_id": "golden", "schema_version": 1,
+    "language": "en", "is_translated": false,
+    "text_en": "45 minutes for two plates of noodles at lunchtime. The queue was out the door and only one person was cooking. Never again on a weekday.",
+    "text_original": "45 minutes for two plates of noodles at lunchtime. The queue was out the door and only one person was cooking. Never again on a weekday.",
+    "sentiment": "negative", "rating": 1,
+    "topic": "wait_time", "secondary_topics": ["service_attentiveness"],
+    "entities": [
+      {"kind": "wait_time", "value": "45 minutes", "sentiment": "negative"},
+      {"kind": "menu_item", "value": "noodles", "sentiment": "neutral"},
+      {"kind": "staff_role", "value": "cook", "sentiment": "negative"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "45 minutes for two plates of noodles at lunch, only one person cooking.",
+    "confidence": 0.92
+  },
+  {
+    "review_id": "seed-006", "business_id": "sg-hawker-042", "review_date": "2026-08-20",
+    "iso_week": "2026-W34", "model_id": "golden", "schema_version": 1,
+    "language": "ta", "is_translated": true,
+    "text_en": "Had to wait forty minutes for lunch. The food was good, but the wait time is far too long.",
+    "text_original": "மதிய உணவுக்கு நாற்பது நிமிடம் காத்திருக்க வேண்டியிருந்தது. உணவு நன்றாக இருந்தது, ஆனால் காத்திருப்பு நேரம் மிக அதிகம்.",
+    "sentiment": "negative", "rating": 2,
+    "topic": "wait_time", "secondary_topics": ["food_quality"],
+    "entities": [
+      {"kind": "wait_time", "value": "forty minutes", "sentiment": "negative"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Had to wait forty minutes for lunch.",
+    "confidence": 0.88
+  },
+  {
+    "review_id": "seed-007", "business_id": "sg-hawker-042", "review_date": "2026-08-22",
+    "iso_week": "2026-W34", "model_id": "golden", "schema_version": 1,
+    "language": "zh", "is_translated": true,
+    "text_en": "Came on a weekend at midday, waited nearly 40 minutes. Only one person cooking in the kitchen and the queue was long. The food is fine, it's just too slow.",
+    "text_original": "周末中午来，等了差不多40分钟。厨房只有一个人在炒，队伍很长。食物没问题，就是太慢。",
+    "sentiment": "negative", "rating": 2,
+    "topic": "wait_time", "secondary_topics": ["service_attentiveness"],
+    "entities": [
+      {"kind": "wait_time", "value": "nearly 40 minutes", "sentiment": "negative"},
+      {"kind": "staff_role", "value": "cook", "sentiment": "negative"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Weekend midday wait nearly 40 minutes, only one cook.",
+    "confidence": 0.9
+  },
+  {
+    "review_id": "seed-008", "business_id": "sg-hawker-042", "review_date": "2026-08-19",
+    "iso_week": "2026-W34", "model_id": "golden", "schema_version": 1,
+    "language": "en", "is_translated": false,
+    "text_en": "Uncle at the stall is a legend, always cheerful even during the rush. Portions are generous and the price has not gone up in years.",
+    "text_original": "Uncle at the stall is a legend, always cheerful even during the rush. Portions are generous and the price has not gone up in years.",
+    "sentiment": "positive", "rating": 5,
+    "topic": "staff_friendliness", "secondary_topics": ["portion_size", "price_value"],
+    "entities": [
+      {"kind": "staff_role", "value": "uncle", "sentiment": "positive"},
+      {"kind": "price", "value": "unchanged for years", "sentiment": "positive"}
+    ],
+    "time_slot": "unknown",
+    "actionable_quote": "Uncle is always cheerful during the rush; portions generous, price stable.",
+    "confidence": 0.9
+  },
+  {
+    "review_id": "seed-009", "business_id": "sg-hawker-042", "review_date": "2026-08-21",
+    "iso_week": "2026-W34", "model_id": "golden", "schema_version": 1,
+    "language": "ms", "is_translated": true,
+    "text_en": "Prices went up again, now eight ringgit for a regular chicken rice. Taste is just okay, not worth the price.",
+    "text_original": "Harga naik lagi, sekarang lapan ringgit untuk nasi ayam biasa. Rasa okay je, tak sepadan dengan harga.",
+    "sentiment": "negative", "rating": 3,
+    "topic": "price_value", "secondary_topics": ["food_quality"],
+    "entities": [
+      {"kind": "price", "value": "eight ringgit", "sentiment": "negative"},
+      {"kind": "menu_item", "value": "chicken rice", "sentiment": "neutral"}
+    ],
+    "time_slot": "unknown",
+    "actionable_quote": "Now eight ringgit for regular chicken rice, not worth it.",
+    "confidence": 0.88
+  },
+  {
+    "review_id": "seed-010", "business_id": "sg-hawker-042", "review_date": "2026-08-24",
+    "iso_week": "2026-W35", "model_id": "golden", "schema_version": 1,
+    "language": "en", "is_translated": false,
+    "text_en": "Lunch service is broken. Ordered at 12:15, got my food at 1:05. Almost an hour. The staff know it is bad, they keep apologising but nothing changes.",
+    "text_original": "Lunch service is broken. Ordered at 12:15, got my food at 1:05. Almost an hour. The staff know it is bad, they keep apologising but nothing changes.",
+    "sentiment": "negative", "rating": 1,
+    "topic": "wait_time", "secondary_topics": ["service_attentiveness"],
+    "entities": [
+      {"kind": "time_slot", "value": "12:15", "sentiment": "negative"},
+      {"kind": "wait_time", "value": "almost an hour", "sentiment": "negative"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Ordered at 12:15, got food at 1:05 - almost an hour.",
+    "confidence": 0.93
+  },
+  {
+    "review_id": "seed-011", "business_id": "sg-hawker-042", "review_date": "2026-08-25",
+    "iso_week": "2026-W35", "model_id": "golden", "schema_version": 1,
+    "language": "zh", "is_translated": true,
+    "text_en": "Arrived at 12:30, didn't get a seat and food until 1:15. Too few staff, one person simply can't keep up. Won't dare come at lunch again.",
+    "text_original": "中午12点半来，等到1点15分才有位子和食物。人手太少，一个人根本忙不过来。以后不敢午餐时间来了。",
+    "sentiment": "negative", "rating": 2,
+    "topic": "wait_time", "secondary_topics": ["service_attentiveness"],
+    "entities": [
+      {"kind": "time_slot", "value": "12:30", "sentiment": "negative"},
+      {"kind": "wait_time", "value": "about 45 minutes", "sentiment": "negative"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Arrived 12:30, no seat or food until 1:15; too few staff.",
+    "confidence": 0.92
+  },
+  {
+    "review_id": "seed-012", "business_id": "sg-hawker-042", "review_date": "2026-08-27",
+    "iso_week": "2026-W35", "model_id": "golden", "schema_version": 1,
+    "language": "ta", "is_translated": true,
+    "text_en": "Came at 1pm, the food took fifty minutes to arrive. Not enough staff. The food wasn't hot, because of waiting so long.",
+    "text_original": "மதியம் ஒரு மணிக்கு வந்தேன், உணவு வர ஐம்பது நிமிடம் ஆனது. வேலையாட்கள் போதவில்லை. உணவு சூடாக இல்லை, அவ்வளவு நேரம் காத்ததால்.",
+    "sentiment": "negative", "rating": 2,
+    "topic": "wait_time", "secondary_topics": ["service_attentiveness", "food_temperature"],
+    "entities": [
+      {"kind": "time_slot", "value": "1pm", "sentiment": "negative"},
+      {"kind": "wait_time", "value": "fifty minutes", "sentiment": "negative"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Came at 1pm, food took fifty minutes and arrived not hot.",
+    "confidence": 0.9
+  },
+  {
+    "review_id": "seed-013", "business_id": "sg-hawker-042", "review_date": "2026-08-28",
+    "iso_week": "2026-W35", "model_id": "golden", "schema_version": 1,
+    "language": "en", "is_translated": false,
+    "text_en": "Saturday lunch, waited 55 minutes. This is the third weekend in a row it has been like this. Whatever changed a month ago, please change it back.",
+    "text_original": "Saturday lunch, waited 55 minutes. This is the third weekend in a row it has been like this. Whatever changed a month ago, please change it back.",
+    "sentiment": "negative", "rating": 1,
+    "topic": "wait_time", "secondary_topics": [],
+    "entities": [
+      {"kind": "wait_time", "value": "55 minutes", "sentiment": "negative"},
+      {"kind": "time_slot", "value": "Saturday lunch", "sentiment": "negative"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Saturday lunch, waited 55 minutes - third weekend in a row.",
+    "confidence": 0.94
+  },
+  {
+    "review_id": "seed-014", "business_id": "sg-hawker-042", "review_date": "2026-08-29",
+    "iso_week": "2026-W35", "model_id": "golden", "schema_version": 1,
+    "language": "ms", "is_translated": true,
+    "text_en": "Midday is very slow. Waited almost an hour for mee goreng. Only one person cooking during the lunch rush, really can't cope.",
+    "text_original": "Tengah hari sangat lambat. Menunggu hampir sejam untuk mee goreng. Satu orang je masak masa lunch rush, memang tak larat.",
+    "sentiment": "negative", "rating": 2,
+    "topic": "wait_time", "secondary_topics": ["service_attentiveness"],
+    "entities": [
+      {"kind": "wait_time", "value": "almost an hour", "sentiment": "negative"},
+      {"kind": "menu_item", "value": "mee goreng", "sentiment": "neutral"},
+      {"kind": "staff_role", "value": "cook", "sentiment": "negative"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Waited almost an hour for mee goreng; one cook during lunch rush.",
+    "confidence": 0.92
+  },
+  {
+    "review_id": "seed-015", "business_id": "sg-hawker-042", "review_date": "2026-08-26",
+    "iso_week": "2026-W35", "model_id": "golden", "schema_version": 1,
+    "language": "en", "is_translated": false,
+    "text_en": "Dinner on a weeknight was a totally different experience, quick and quiet. The hor fun had great wok hei. Come after 7pm and you are fine.",
+    "text_original": "Dinner on a weeknight was a totally different experience, quick and quiet. The hor fun had great wok hei. Come after 7pm and you are fine.",
+    "sentiment": "positive", "rating": 5,
+    "topic": "wait_time", "secondary_topics": ["food_quality", "ambience_noise"],
+    "entities": [
+      {"kind": "time_slot", "value": "after 7pm", "sentiment": "positive"},
+      {"kind": "menu_item", "value": "hor fun", "sentiment": "positive"}
+    ],
+    "time_slot": "dinner",
+    "actionable_quote": "Dinner on a weeknight was quick and quiet; come after 7pm.",
+    "confidence": 0.85
+  },
+  {
+    "review_id": "seed-016", "business_id": "sg-hawker-042", "review_date": "2026-08-30",
+    "iso_week": "2026-W35", "model_id": "golden", "schema_version": 1,
+    "language": "zh", "is_translated": true,
+    "text_en": "The auntie is very nice, top-notch service attitude. Coming in the evening is comfortable, hardly any queue. The food taste has always been consistent.",
+    "text_original": "阿姨人很好，服务态度一流。晚上来吃很舒服，没什么人排队。菜的味道一直都很稳定。",
+    "sentiment": "positive", "rating": 4,
+    "topic": "staff_friendliness", "secondary_topics": ["wait_time", "food_quality"],
+    "entities": [
+      {"kind": "staff_role", "value": "auntie", "sentiment": "positive"},
+      {"kind": "time_slot", "value": "evening", "sentiment": "positive"}
+    ],
+    "time_slot": "dinner",
+    "actionable_quote": "Auntie is very nice; evenings comfortable with hardly any queue.",
+    "confidence": 0.87
+  },
+  {
+    "review_id": "seed-017", "business_id": "sg-hawker-042", "review_date": "2026-08-08",
+    "iso_week": "2026-W32", "model_id": "golden", "schema_version": 1,
+    "language": "en", "is_translated": false,
+    "text_en": "The curry was lukewarm when it reached me, like it had been sitting out. Taste was there but I had to ask them to heat it up again.",
+    "text_original": "The curry was lukewarm when it reached me, like it had been sitting out. Taste was there but I had to ask them to heat it up again.",
+    "sentiment": "mixed", "rating": 3,
+    "topic": "food_temperature", "secondary_topics": ["food_quality"],
+    "entities": [
+      {"kind": "menu_item", "value": "curry", "sentiment": "negative"}
+    ],
+    "time_slot": "unknown",
+    "actionable_quote": "The curry was lukewarm, like it had been sitting out.",
+    "confidence": 0.9
+  },
+  {
+    "review_id": "seed-018", "business_id": "sg-hawker-042", "review_date": "2026-08-31",
+    "iso_week": "2026-W36", "model_id": "golden", "schema_version": 1,
+    "language": "en", "is_translated": false,
+    "text_en": "Tray return area was overflowing and nobody cleared it for the whole time I was there. Tables sticky. The food deserves a cleaner setting.",
+    "text_original": "Tray return area was overflowing and nobody cleared it for the whole time I was there. Tables sticky. The food deserves a cleaner setting.",
+    "sentiment": "negative", "rating": 2,
+    "topic": "cleanliness", "secondary_topics": [],
+    "entities": [
+      {"kind": "location_area", "value": "tray return area", "sentiment": "negative"},
+      {"kind": "location_area", "value": "tables", "sentiment": "negative"}
+    ],
+    "time_slot": "unknown",
+    "actionable_quote": "Tray return area overflowing the whole time; tables sticky.",
+    "confidence": 0.9
+  },
+  {
+    "review_id": "seed-019", "business_id": "sg-hawker-042", "review_date": "2026-08-16",
+    "iso_week": "2026-W33", "model_id": "golden", "schema_version": 1,
+    "language": "ta", "is_translated": true,
+    "text_en": "I asked for chicken biryani, they gave me mutton biryani. They refused to take it back. Carelessness.",
+    "text_original": "நான் கோழி பிரியாணி கேட்டேன், அவர்கள் ஆட்டு பிரியாணி கொடுத்தார்கள். திரும்பக் கொடுக்க மறுத்தார்கள். கவனக்குறைவு.",
+    "sentiment": "negative", "rating": 2,
+    "topic": "order_accuracy", "secondary_topics": ["staff_friendliness"],
+    "entities": [
+      {"kind": "menu_item", "value": "chicken biryani", "sentiment": "negative"},
+      {"kind": "menu_item", "value": "mutton biryani", "sentiment": "negative"}
+    ],
+    "time_slot": "unknown",
+    "actionable_quote": "Asked for chicken biryani, got mutton, and they refused to swap it.",
+    "confidence": 0.91
+  },
+  {
+    "review_id": "seed-020", "business_id": "sg-hawker-042", "review_date": "2026-08-23",
+    "iso_week": "2026-W34", "model_id": "golden", "schema_version": 1,
+    "language": "ms", "is_translated": true,
+    "text_en": "Very noisy at lunch, hard to hear people talk. The fan is broken too, hot. The food is still tasty as usual.",
+    "text_original": "Bising sangat masa lunch, susah nak dengar orang bercakap. Kipas pun rosak, panas. Makanan tetap sedap macam biasa.",
+    "sentiment": "mixed", "rating": 3,
+    "topic": "ambience_noise", "secondary_topics": ["seating_comfort", "food_quality"],
+    "entities": [
+      {"kind": "location_area", "value": "fan", "sentiment": "negative"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Very noisy at lunch and the fan is broken, so it's hot.",
+    "confidence": 0.88
+  },
+  {
+    "review_id": "seed-021", "business_id": "sg-hawker-042", "review_date": "2026-08-05",
+    "iso_week": "2026-W32", "model_id": "golden", "schema_version": 1,
+    "language": "en", "is_translated": false,
+    "text_en": "Still the best value lunch in the neighbourhood if you come early. Was seated and eating within ten minutes at 11:15am.",
+    "text_original": "Still the best value lunch in the neighbourhood if you come early. Was seated and eating within ten minutes at 11:15am.",
+    "sentiment": "positive", "rating": 5,
+    "topic": "price_value", "secondary_topics": ["wait_time"],
+    "entities": [
+      {"kind": "time_slot", "value": "11:15am", "sentiment": "positive"},
+      {"kind": "wait_time", "value": "ten minutes", "sentiment": "positive"}
+    ],
+    "time_slot": "lunch",
+    "actionable_quote": "Best value lunch if you come early - seated and eating within ten minutes at 11:15am.",
+    "confidence": 0.87
+  },
+  {
+    "review_id": "seed-022", "business_id": "sg-hawker-042", "review_date": "2026-08-13",
+    "iso_week": "2026-W33", "model_id": "golden", "schema_version": 1,
+    "language": "zh", "is_translated": true,
+    "text_en": "The portion is much smaller than before, but the price is the same. One small piece of chicken with a pile of rice, not enough to fill you up.",
+    "text_original": "份量比以前少了很多，价钱却一样。一小块鸡肉配一堆饭，吃不饱。",
+    "sentiment": "negative", "rating": 2,
+    "topic": "portion_size", "secondary_topics": ["price_value"],
+    "entities": [
+      {"kind": "menu_item", "value": "chicken", "sentiment": "negative"},
+      {"kind": "price", "value": "unchanged", "sentiment": "negative"}
+    ],
+    "time_slot": "unknown",
+    "actionable_quote": "Portion much smaller than before for the same price; one small piece of chicken.",
+    "confidence": 0.9
+  }
+]
