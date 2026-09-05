@@ -2,3 +2,22 @@
 __pycache__/
 *.pyc
 .venv/
+# env
+.env
+.venv/
+venv/
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+
+# local data store (the LocalJSONRepository backend)
+data/store/
+*.local.json
+
+# os
+.DS_Store
