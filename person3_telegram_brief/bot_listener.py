@@ -68,19 +68,36 @@ def handle_callback_query(cq: dict) -> None:
 def poll(interval_seconds: float = 2.0) -> None:
     offset = None
     print("Listening for button taps (Ctrl+C to stop)...", flush=True)
+    consecutive_failures = 0
     while True:
         params = {"timeout": 30}
         if offset is not None:
             params["offset"] = offset
-        resp = requests.get(f"{API}/getUpdates", params=params, timeout=35)
-        resp.raise_for_status()
-        data = resp.json()
+
+        try:
+            resp = requests.get(f"{API}/getUpdates", params=params, timeout=35)
+            resp.raise_for_status()
+            data = resp.json()
+        except requests.RequestException as e:
+            consecutive_failures += 1
+            print(f"[warning] Telegram getUpdates failed ({e}); retrying in {interval_seconds}s "
+                  f"(failure #{consecutive_failures})", flush=True)
+            time.sleep(interval_seconds)
+            continue
+
+        consecutive_failures = 0
 
         for update in data.get("result", []):
             offset = update["update_id"] + 1
             cq = update.get("callback_query")
-            if cq:
+            if not cq:
+                continue
+            try:
                 handle_callback_query(cq)
+            except requests.RequestException as e:
+                # Don't let one bad callback (e.g. Telegram edit/answer call
+                # failing) kill the whole listener — log and keep polling.
+                print(f"[warning] failed to process callback {cq.get('data')}: {e}", flush=True)
 
         time.sleep(interval_seconds)
 

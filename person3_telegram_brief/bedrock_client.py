@@ -26,6 +26,8 @@ import os
 import boto3
 from dotenv import load_dotenv
 
+from metrics import log_tool_call, log_token_usage
+
 load_dotenv(".env")
 
 AWS_PROFILE = os.environ.get("AWS_PROFILE", "hackathon")
@@ -40,11 +42,24 @@ _client = _session.client("bedrock-runtime")
 
 def ask_claude(prompt: str, system: str = "You are a helpful assistant.", max_tokens: int = 512) -> str:
     """Send one prompt to Claude via Bedrock, return the text reply."""
-    response = _client.converse(
-        modelId=BEDROCK_MODEL,
-        messages=[{"role": "user", "content": [{"text": prompt}]}],
-        system=[{"text": system}],
-        inferenceConfig={"maxTokens": max_tokens},
+    try:
+        response = _client.converse(
+            modelId=BEDROCK_MODEL,
+            messages=[{"role": "user", "content": [{"text": prompt}]}],
+            system=[{"text": system}],
+            inferenceConfig={"maxTokens": max_tokens},
+        )
+    except Exception as e:
+        log_tool_call("bedrock_converse", success=False, error=str(e))
+        raise
+
+    log_tool_call("bedrock_converse", success=True)
+    usage = response.get("usage", {})
+    log_token_usage(
+        step="ask_claude",
+        model_id=BEDROCK_MODEL,
+        input_tokens=usage.get("inputTokens", 0),
+        output_tokens=usage.get("outputTokens", 0),
     )
     return response["output"]["message"]["content"][0]["text"]
 

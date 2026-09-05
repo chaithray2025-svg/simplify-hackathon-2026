@@ -20,6 +20,7 @@ from langgraph.graph import StateGraph, START, END
 import data_source
 from reply_drafting import draft_reply
 from telegram_brief import format_brief
+from metrics import log_task_completion, log_loop_iteration
 
 
 class PipelineState(TypedDict, total=False):
@@ -51,16 +52,20 @@ def draft_replies(state: PipelineState) -> PipelineState:
     REAL — Person 3's Reply Drafting Agent, run over every review currently
     awaiting a reply.
 
-    TODO: if/when this gets retry logic (e.g. re-drafting on a validation
-    failure), bound it with a hard iteration cap in state, per the "bound
-    every loop" rule in PROJECT_PLAN.md. No retries yet, so nothing to cap
-    today.
+    No retry logic exists yet, so each review is logged as a single bounded
+    iteration (cap=1) per the "bound every loop" rule in PROJECT_PLAN.md —
+    if retries are added later, bump `cap` accordingly and log each attempt.
     """
     reviews = data_source.get_reviews_needing_reply()
-    drafts = {
-        r["review_id"]: draft_reply(r["review_text"], r["sentiment"], r["language"])
-        for r in reviews
-    }
+    drafts = {}
+    for r in reviews:
+        try:
+            drafts[r["review_id"]] = draft_reply(r["review_text"], r["sentiment"], r["language"])
+            log_loop_iteration(task_id=r["review_id"], iteration=1, cap=1)
+            log_task_completion(task_id=f"reply:{r['review_id']}", completed=True)
+        except Exception:
+            log_task_completion(task_id=f"reply:{r['review_id']}", completed=False, human_intervened=True)
+            raise
     return {"reviews_needing_reply": reviews, "reply_drafts": drafts}
 
 
@@ -74,7 +79,12 @@ def build_briefs(state: PipelineState) -> PipelineState:
     for tf in state["trend_flags"]:
         advice_record = state["advice_by_trend"][tf["trend_flag_id"]]
         merged = {**tf, **advice_record}  # trend flag fields + advice fields
-        briefs.append(format_brief(merged))
+        try:
+            briefs.append(format_brief(merged))
+            log_task_completion(task_id=f"brief:{tf['trend_flag_id']}", completed=True)
+        except Exception:
+            log_task_completion(task_id=f"brief:{tf['trend_flag_id']}", completed=False)
+            raise
     return {"briefs": briefs}
 
 

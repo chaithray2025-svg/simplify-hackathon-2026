@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from langchain_aws import ChatBedrockConverse
 
 from trend_detection import load_reviews, find_trend_flags
+from metrics import log_token_usage, log_fidelity
 
 load_dotenv()
 
@@ -82,6 +83,15 @@ Sample quotes:
         ("human", user_content),
     ])
 
+    usage = response.usage_metadata or {}
+    log_token_usage(
+        step="advice_agent",
+        model_id=SONNET_MODEL_ID,
+        input_tokens=usage.get("input_tokens", 0),
+        output_tokens=usage.get("output_tokens", 0),
+        run_id=trend_flag.get("topic"),
+    )
+
     return response.content
 
 
@@ -110,6 +120,7 @@ if __name__ == "__main__":
     for flag in flags:
         advice = generate_advice(flag)
         passed = is_actionable(advice)
+        log_fidelity(item_id=flag["topic"], step="advice_actionability", passed=passed)
 
         print(f"Topic: {flag['topic']}")
         print(f"Advice: {advice}")

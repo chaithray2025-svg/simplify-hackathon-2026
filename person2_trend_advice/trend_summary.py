@@ -12,11 +12,18 @@ from dotenv import load_dotenv
 from langchain_aws import ChatBedrockConverse
 
 from trend_detection import load_reviews, find_trend_flags
+from metrics import log_token_usage
 
 load_dotenv()
 
-MODEL_ID = os.environ.get("BEDROCK_MODEL", "us.anthropic.claude-haiku-4-5-20251001-v1:0")
-REGION = os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
+# VERIFIED (Person 1, live against the hackathon AWS account, see SETUP.md /
+# bedrock_client.py): this org's SCP restricts Bedrock to ap-southeast-1 ONLY.
+# Haiku 4.5 only exists here as a cross-region inference profile
+# (us.*/global.*/apac.*), which the SCP denies regardless of region set here.
+# us-east-1 + the *-4-5-* profile ID will NOT work in this account — use the
+# same on-demand model + region as bedrock_client.py / advice_agent.py.
+MODEL_ID = os.environ.get("BEDROCK_MODEL", "anthropic.claude-3-haiku-20240307-v1:0")
+REGION = os.environ.get("AWS_DEFAULT_REGION", "ap-southeast-1")
 
 model = ChatBedrockConverse(
     model=MODEL_ID,
@@ -43,6 +50,15 @@ Sample quotes:
         ("system", SYSTEM_PROMPT),
         ("human", user_content),
     ])
+
+    usage = response.usage_metadata or {}
+    log_token_usage(
+        step="trend_summary",
+        model_id=MODEL_ID,
+        input_tokens=usage.get("input_tokens", 0),
+        output_tokens=usage.get("output_tokens", 0),
+        run_id=trend_flag.get("topic"),
+    )
 
     return response.content
 

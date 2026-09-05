@@ -52,65 +52,50 @@ everyone scatters.
 
 ## Step 0 — One-time AWS setup (whole team)
 
-> **Corrected from the original draft of this plan**, which described
-> `aws configure sso` against a `workshop` profile in `ap-southeast-1`. That
-> doesn't match how this hackathon's account is actually provisioned — it's
-> an **AWS Innovation Sandbox** account reached through an IAM Identity
-> Center access portal, not a direct SSO CLI login. The steps below are what
-> was actually verified working end-to-end (AWS CLI + boto3 install, login,
-> and a real Bedrock Haiku call all succeeded against these exact settings).
+> **This section now matches `SETUP.md` exactly** — an earlier draft of this
+> plan described a `workshop` SSO profile in `ap-southeast-1`, which does not
+> match how this hackathon's account is provisioned. See `SETUP.md` for the
+> full walkthrough; this is the condensed version.
 
 1. Register your team's IAM Identity Center login (one person, the "group
    representative," does this once) and lease a sandbox AWS account via the
-   **Innovation Sandbox Ignite Hackathon Application**. Full click-by-click
-   steps are in the "IGNITE Hackathon 2026 AWS accounts access guide" PDF.
-2. Every team member logs into the same access portal
-   (`https://d-9667b91afb.awsapps.com/start`) using the shared username
-   (`hackathon2026,<group leader's email>`), shared password, and the shared
-   MFA secret key (added to your own authenticator app — don't ask a
-   teammate to generate codes for you each time, that doesn't scale).
-3. From the portal's **Accounts** tab, expand your sandbox account → **Access
-   keys** → copy the credentials block under "Option 2: Add a profile to
-   your AWS credentials file" into your own `~/.aws/credentials`, under a
-   profile named `hackathon`:
-   ```ini
-   [hackathon]
-   aws_access_key_id = ...
-   aws_secret_access_key = ...
-   aws_session_token = ...
-   ```
-   And in `~/.aws/config`:
-   ```ini
-   [profile hackathon]
-   region = us-east-1
-   output = json
-   ```
-   **These keys expire every 12 hours** — repeat this step whenever they lapse.
-4. Verify:
-   ```bash
-   aws sts get-caller-identity --profile hackathon
-   ```
-5. In your project's `.env`:
+   **Innovation Sandbox Ignite Hackathon Application**.
+2. Every team member logs into the shared access portal
+   (`https://d-9667b91afb.awsapps.com/start`) with the shared username,
+   password, and MFA secret key (added to your own authenticator app).
+3. From the portal's **Accounts** tab, copy the temporary credentials into
+   `~/.aws/credentials` under a profile named `hackathon`, and set
+   `region = us-east-1` in `~/.aws/config`. **These keys expire every 12
+   hours** — repeat this step whenever they lapse.
+4. Verify: `aws sts get-caller-identity --profile hackathon`
+5. `.env`:
    ```
    LLM_PROVIDER=bedrock
    AWS_PROFILE=hackathon
    AWS_DEFAULT_REGION=us-east-1
    BEDROCK_MODEL=us.anthropic.claude-haiku-4-5-20251001-v1:0
    ```
-6. Model access (Bedrock → Model access, in the `us-east-1` console) needs to
-   be enabled/approved before any call works — confirmed already enabled and
-   working for Claude Haiku 4.5 in this account as of this writing.
 
-**Verified working call** (`bedrock-runtime.converse`, `us-east-1`, profile
-`hackathon`, model `us.anthropic.claude-haiku-4-5-20251001-v1:0`) — see
-`person3_telegram_brief/bedrock_client.py` for a ready-to-use `ask_claude()`
-helper matching this exact config.
+**Correction (superseded by `SETUP.md`):** the `us.*` cross-region profile ID
+above was later found to be blocked by an org-level Service Control Policy
+that restricts Bedrock to `ap-southeast-1` only — cross-region inference
+profiles (`us.*`/`global.*`/`apac.*`) get denied regardless of the region set
+in `.env`. **The actually-working config**, confirmed live and used by every
+agent in this repo, is direct on-demand models called in `ap-southeast-1`:
+
+```
+AWS_DEFAULT_REGION=ap-southeast-1
+BEDROCK_MODEL=anthropic.claude-3-haiku-20240307-v1:0
+BEDROCK_SONNET_MODEL=anthropic.claude-3-5-sonnet-20240620-v1:0
+```
+
+If you ever change these, re-verify with a raw CLI call first (see
+`SETUP.md` §3) — it's faster to debug than through the app.
 
 **Cost discipline** (real budget: $20 hard cap, team-wide, does not reset):
 avoid OpenSearch, SageMaker real-time endpoints, NAT Gateways, load
-balancers, always-on EC2/RDS, and Bedrock Provisioned Throughput — all of
-these burn the whole budget in a day, idle. Stick to Bedrock on-demand,
-Lambda, DynamoDB on-demand, and S3/S3 Vectors.
+balancers, always-on EC2/RDS, and Bedrock Provisioned Throughput. Stick to
+Bedrock on-demand, Lambda, DynamoDB on-demand, and S3.
 
 ---
 

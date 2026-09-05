@@ -22,6 +22,7 @@ from pydantic import ValidationError
 from . import SCHEMA_VERSION
 from .bedrock_client import complete, extract_json_block
 from .config import SETTINGS
+from .metrics import log_schema_validation
 from .models import ExtractedReviewRecord, RawReview, iso_week_of
 from .repository import Repository, get_repository
 from .topics import ENTITY_KINDS, LANGUAGES, TIME_SLOTS, TOPIC_GLOSS, TOPICS
@@ -160,13 +161,15 @@ def extract(raw: RawReview) -> ExtractionResult:
     try:
         record = ExtractedReviewRecord(**payload)
     except ValidationError as exc:
+        reason = "; ".join(f"{e['loc']}: {e['msg']}" for e in exc.errors())
+        log_schema_validation("ExtractedReviewRecord", passed=False, reason=reason)
         return ExtractionResult(
             ok=False,
-            error="schema_validation_failed: "
-            + "; ".join(f"{e['loc']}: {e['msg']}" for e in exc.errors()),
+            error=f"schema_validation_failed: {reason}",
             raw_model_output=raw_out,
         )
 
+    log_schema_validation("ExtractedReviewRecord", passed=True)
     return ExtractionResult(ok=True, record=record, raw_model_output=raw_out)
 
 
