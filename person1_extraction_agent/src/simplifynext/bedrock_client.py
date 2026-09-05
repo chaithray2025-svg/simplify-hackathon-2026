@@ -76,7 +76,7 @@ _MOCK_TOPIC_HINTS = [
     ("food_temperature", ["cold", "lukewarm", "not hot", "冷", "குளிர்", "sejuk"]),
     ("food_quality", ["bland", "stale", "overcooked", "undercooked", "tasteless",
                        "delicious", "tasty", "好吃", "难吃", "sedap", "ருசி"]),
-    ("staff_friendliness", ["rude", "friendly", "attitude", "polite", "态度",
+    ("staff_attitude", ["rude", "friendly", "attitude", "polite", "态度",
                              "பணிவ", "biadap", "mesra"]),
     ("order_accuracy", ["wrong order", "missing", "wrong item", "gave me the wrong",
                          "点错", "salah pesanan"]),

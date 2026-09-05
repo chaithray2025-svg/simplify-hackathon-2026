@@ -38,7 +38,7 @@
     "text_en": "The sambal here is incredible, best I have had in the east. Auntie was so warm and even remembered my order from last time.",
     "text_original": "The sambal here is incredible, best I have had in the east. Auntie was so warm and even remembered my order from last time.",
     "sentiment": "positive", "rating": 5,
-    "topic": "food_quality", "secondary_topics": ["staff_friendliness"],
+    "topic": "food_quality", "secondary_topics": ["staff_attitude"],
     "entities": [
       {"kind": "menu_item", "value": "sambal", "sentiment": "positive"},
       {"kind": "staff_role", "value": "auntie", "sentiment": "positive"}
@@ -118,7 +118,7 @@
     "text_en": "Uncle at the stall is a legend, always cheerful even during the rush. Portions are generous and the price has not gone up in years.",
     "text_original": "Uncle at the stall is a legend, always cheerful even during the rush. Portions are generous and the price has not gone up in years.",
     "sentiment": "positive", "rating": 5,
-    "topic": "staff_friendliness", "secondary_topics": ["portion_size", "price_value"],
+    "topic": "staff_attitude", "secondary_topics": ["portion_size", "price_value"],
     "entities": [
       {"kind": "staff_role", "value": "uncle", "sentiment": "positive"},
       {"kind": "price", "value": "unchanged for years", "sentiment": "positive"}
@@ -247,7 +247,7 @@
     "text_en": "The auntie is very nice, top-notch service attitude. Coming in the evening is comfortable, hardly any queue. The food taste has always been consistent.",
     "text_original": "阿姨人很好，服务态度一流。晚上来吃很舒服，没什么人排队。菜的味道一直都很稳定。",
     "sentiment": "positive", "rating": 4,
-    "topic": "staff_friendliness", "secondary_topics": ["wait_time", "food_quality"],
+    "topic": "staff_attitude", "secondary_topics": ["wait_time", "food_quality"],
     "entities": [
       {"kind": "staff_role", "value": "auntie", "sentiment": "positive"},
       {"kind": "time_slot", "value": "evening", "sentiment": "positive"}
@@ -294,7 +294,7 @@
     "text_en": "I asked for chicken biryani, they gave me mutton biryani. They refused to take it back. Carelessness.",
     "text_original": "நான் கோழி பிரியாணி கேட்டேன், அவர்கள் ஆட்டு பிரியாணி கொடுத்தார்கள். திரும்பக் கொடுக்க மறுத்தார்கள். கவனக்குறைவு.",
     "sentiment": "negative", "rating": 2,
-    "topic": "order_accuracy", "secondary_topics": ["staff_friendliness"],
+    "topic": "order_accuracy", "secondary_topics": ["staff_attitude"],
     "entities": [
       {"kind": "menu_item", "value": "chicken biryani", "sentiment": "negative"},
       {"kind": "menu_item", "value": "mutton biryani", "sentiment": "negative"}

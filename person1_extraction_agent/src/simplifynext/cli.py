@@ -79,6 +79,20 @@ def cmd_seed(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_export_for_p2(args: argparse.Namespace) -> int:
+    """Dump extracted records in the exact flat shape person2_trend_advice's
+    trend_detection.py / advice_agent.py already read — a drop-in replacement
+    for their fake_data/fake_extracted_reviews.json."""
+    from .extraction_agent import export_for_p2
+
+    rows = export_for_p2(business_id=args.business)
+    out_path = args.out
+    with open(out_path, "w", encoding="utf-8") as fh:
+        json.dump(rows, fh, ensure_ascii=False, indent=2)
+    print(f"wrote {len(rows)} records to {out_path}")
+    return 0
+
+
 def cmd_show(args: argparse.Namespace) -> int:
     repo = get_repository()
     recs = repo.list_extracted(business_id=args.business)
@@ -121,6 +135,11 @@ def main(argv: list[str] | None = None) -> int:
 
     pseed = sub.add_parser("seed", help="load raw + golden extracted seed data")
     pseed.set_defaults(func=cmd_seed)
+
+    pexp = sub.add_parser("export-for-p2", help="dump extracted records in P2's flat shape")
+    pexp.add_argument("--business", default=None)
+    pexp.add_argument("--out", default="export_for_p2.json")
+    pexp.set_defaults(func=cmd_export_for_p2)
 
     ps = sub.add_parser("show", help="list extracted records")
     ps.add_argument("--business", default=None)

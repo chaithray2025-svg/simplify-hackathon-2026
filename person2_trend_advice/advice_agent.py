@@ -17,13 +17,17 @@ from trend_detection import load_reviews, find_trend_flags
 
 load_dotenv()
 
-# NOTE: swap this for your Sonnet inference profile ID once you've
-# confirmed it the same way we confirmed Haiku's — run:
-#   aws bedrock list-inference-profiles --profile <you> --region us-east-1 | grep -A 2 "sonnet-4"
+# VERIFIED (Person 1, live against the hackathon account): this AWS org has a
+# Service Control Policy that restricts Bedrock to ap-southeast-1 ONLY. Sonnet
+# 4.5 only exists as a cross-region inference profile (us.*/global.*/apac.*),
+# which by definition can route outside ap-southeast-1 — so the SCP denies it
+# with "AccessDeniedException ... explicit deny in a service control policy",
+# no matter the region you set here. us-east-1 will not work in this account.
+# This on-demand ID is confirmed working directly in ap-southeast-1:
 SONNET_MODEL_ID = os.environ.get(
-    "BEDROCK_SONNET_MODEL", "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+    "BEDROCK_SONNET_MODEL", "anthropic.claude-3-5-sonnet-20240620-v1:0"
 )
-REGION = os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
+REGION = os.environ.get("AWS_DEFAULT_REGION", "ap-southeast-1")
 
 model = ChatBedrockConverse(
     model=SONNET_MODEL_ID,

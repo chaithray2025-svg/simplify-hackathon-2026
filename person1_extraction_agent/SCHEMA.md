@@ -32,7 +32,7 @@ grouping.
 | `price_value` | too expensive, surcharges, value for money |
 | `wait_time` | queue to be seated, time from order to food, long bill wait |
 | `service_attentiveness` | ignored, hard to flag staff, slow refills |
-| `staff_friendliness` | rude, warm, went out of their way |
+| `staff_attitude` | rude, warm, went out of their way |
 | `order_accuracy` | wrong item, missing item, allergy/request ignored |
 | `cleanliness` | dirty table, cutlery, toilet, floor |
 | `ambience_noise` | too loud, too dark, music, crowding, smell |
@@ -110,7 +110,7 @@ One per RawReview. This is the **Extracted Review Record** the plan refers to.
   "rating": 2,                         // carried over from RawReview (int or null)
 
   "topic": "wait_time",               // PRIMARY topic, controlled vocab
-  "secondary_topics": ["staff_friendliness"],  // 0..3 more from the controlled vocab
+  "secondary_topics": ["staff_attitude"],  // 0..3 more from the controlled vocab
 
   "entities": [                        // concrete things named in the review
     {

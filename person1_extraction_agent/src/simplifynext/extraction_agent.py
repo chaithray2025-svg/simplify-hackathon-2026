@@ -201,3 +201,34 @@ def run_batch(raws: list[RawReview], repo: Repository | None = None) -> dict[str
             err += 1
             print(f"  ! {raw.review_id}: {res.error}")
     return {"ok": ok, "error": err, "total": len(raws)}
+
+
+def to_p2_shape(rec: ExtractedReviewRecord) -> dict:
+    """Adapter: our ExtractedReviewRecord -> the exact flat dict shape
+    person2_trend_advice/trend_detection.py + advice_agent.py already read
+    (see their fake_data/fake_extracted_reviews.json). Person 1's stored record
+    is richer (translation fields, structured entities, confidence, time_slot);
+    this strips it down to what P2's code actually accesses, so real extracted
+    data drops straight into their pipeline with no changes on their side.
+
+    Known gap: only the primary `topic` is emitted (matches their current
+    one-topic-per-row assumption) — secondary_topics are dropped here.
+    """
+    return {
+        "review_id": rec.review_id,
+        "business_id": rec.business_id,
+        "week": rec.iso_week,
+        "topic": rec.topic,
+        "sentiment": rec.sentiment,
+        "entities": [e.value for e in rec.entities],
+        "language": rec.language,
+        "quote": rec.actionable_quote,
+        "date": rec.review_date,
+    }
+
+
+def export_for_p2(
+    business_id: str | None = None, repo: Repository | None = None
+) -> list[dict]:
+    repo = repo or get_repository()
+    return [to_p2_shape(r) for r in repo.list_extracted(business_id=business_id)]

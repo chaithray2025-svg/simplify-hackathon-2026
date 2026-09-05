@@ -1,18 +1,25 @@
 """
-Small reusable helper for calling Claude on Bedrock, matching the config
-Chaithra shared:
+Small reusable helper for calling Claude on Bedrock.
+
+UPDATED (Person 1, verified live against the hackathon AWS account): this org
+has a Service Control Policy restricting Bedrock to ap-southeast-1 ONLY. Haiku
+4.5 only exists as a cross-region inference profile (us.*/global.*/apac.*),
+which can route outside ap-southeast-1 — the SCP denies it regardless of what
+region you set. us-east-1 will not work in this account at all.
+
+Confirmed working directly in ap-southeast-1:
 
     LLM_PROVIDER=bedrock
     AWS_PROFILE=<your own profile name>
-    AWS_DEFAULT_REGION=us-east-1
-    BEDROCK_MODEL=us.anthropic.claude-haiku-4-5-20251001-v1:0
+    AWS_DEFAULT_REGION=ap-southeast-1
+    BEDROCK_MODEL=anthropic.claude-3-haiku-20240307-v1:0
 
 Set these in your own .env (or shell) to match your local AWS profile name,
 e.g.:
 
     AWS_PROFILE=hackathon
-    AWS_DEFAULT_REGION=us-east-1
-    BEDROCK_MODEL=us.anthropic.claude-haiku-4-5-20251001-v1:0
+    AWS_DEFAULT_REGION=ap-southeast-1
+    BEDROCK_MODEL=anthropic.claude-3-haiku-20240307-v1:0
 """
 
 import os
@@ -22,9 +29,9 @@ from dotenv import load_dotenv
 load_dotenv(".env")
 
 AWS_PROFILE = os.environ.get("AWS_PROFILE", "hackathon")
-AWS_REGION = os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
+AWS_REGION = os.environ.get("AWS_DEFAULT_REGION", "ap-southeast-1")
 BEDROCK_MODEL = os.environ.get(
-    "BEDROCK_MODEL", "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+    "BEDROCK_MODEL", "anthropic.claude-3-haiku-20240307-v1:0"
 )
 
 _session = boto3.Session(profile_name=AWS_PROFILE, region_name=AWS_REGION)
