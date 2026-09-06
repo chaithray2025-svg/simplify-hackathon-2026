@@ -30,11 +30,23 @@ SONNET_MODEL_ID = os.environ.get(
 )
 REGION = os.environ.get("AWS_DEFAULT_REGION", "ap-southeast-1")
 
-model = ChatBedrockConverse(
-    model=SONNET_MODEL_ID,
-    temperature=0,
-    region_name=REGION,
-)
+# Built lazily, on first real call. ChatBedrockConverse constructs its own
+# boto3 client at instantiation, which validates AWS credentials immediately —
+# building it at import time meant `import advice_agent` (pulled in by
+# data_source.py the moment person2_trend_advice/ exists on disk) crashed
+# before any trend was ever generated, with no way to fall back to mock data.
+_model = None
+
+
+def _get_model():
+    global _model
+    if _model is None:
+        _model = ChatBedrockConverse(
+            model=SONNET_MODEL_ID,
+            temperature=0,
+            region_name=REGION,
+        )
+    return _model
 
 SYSTEM_PROMPT = """You are an operations advisor for a small F&B business owner in Singapore.
 You will be given a trending complaint topic, the weekly counts behind it, and sample review quotes.
@@ -78,7 +90,7 @@ Sample quotes:
 {chr(10).join('- ' + q['quote'] for q in trend_flag['supporting_quotes'][:4])}
 """
 
-    response = model.invoke([
+    response = _get_model().invoke([
         ("system", SYSTEM_PROMPT),
         ("human", user_content),
     ])

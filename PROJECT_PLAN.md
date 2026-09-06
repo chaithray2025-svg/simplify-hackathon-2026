@@ -52,45 +52,40 @@ everyone scatters.
 
 ## Step 0 — One-time AWS setup (whole team)
 
-> **This section now matches `SETUP.md` exactly** — an earlier draft of this
-> plan described a `workshop` SSO profile in `ap-southeast-1`, which does not
-> match how this hackathon's account is provisioned. See `SETUP.md` for the
-> full walkthrough; this is the condensed version.
+> **This section now matches `SETUP.md` exactly.** Two earlier drafts of this
+> plan are superseded by what's below: one described a `workshop` SSO profile
+> in `ap-southeast-1` before that was confirmed as the actual setup, and a
+> later one described logging in through an IAM Identity Center portal with a
+> `hackathon` profile in `us-east-1` — that flow does not match how this
+> hackathon's account is provisioned. `SETUP.md` is the source of truth; this
+> is the condensed version.
 
-1. Register your team's IAM Identity Center login (one person, the "group
-   representative," does this once) and lease a sandbox AWS account via the
-   **Innovation Sandbox Ignite Hackathon Application**.
-2. Every team member logs into the shared access portal
-   (`https://d-9667b91afb.awsapps.com/start`) with the shared username,
-   password, and MFA secret key (added to your own authenticator app).
-3. From the portal's **Accounts** tab, copy the temporary credentials into
-   `~/.aws/credentials` under a profile named `hackathon`, and set
-   `region = us-east-1` in `~/.aws/config`. **These keys expire every 12
-   hours** — repeat this step whenever they lapse.
-4. Verify: `aws sts get-caller-identity --profile hackathon`
-5. `.env`:
+1. Run `aws configure sso` once per teammate — SSO start URL from the
+   hackathon training deck, SSO region `ap-southeast-1`, region
+   `ap-southeast-1`, profile name `workshop`.
+2. `aws sso login --profile workshop`, then verify with
+   `aws sts get-caller-identity --profile workshop` (must print an
+   account/ARN, not an error).
+3. `.env`:
    ```
    LLM_PROVIDER=bedrock
-   AWS_PROFILE=hackathon
-   AWS_DEFAULT_REGION=us-east-1
-   BEDROCK_MODEL=us.anthropic.claude-haiku-4-5-20251001-v1:0
+   AWS_PROFILE=workshop
+   AWS_DEFAULT_REGION=ap-southeast-1
+   BEDROCK_MODEL_EXTRACTION=anthropic.claude-3-haiku-20240307-v1:0
+   BEDROCK_MODEL_REASONING=anthropic.claude-3-5-sonnet-20240620-v1:0
    ```
 
-**Correction (superseded by `SETUP.md`):** the `us.*` cross-region profile ID
-above was later found to be blocked by an org-level Service Control Policy
-that restricts Bedrock to `ap-southeast-1` only — cross-region inference
-profiles (`us.*`/`global.*`/`apac.*`) get denied regardless of the region set
-in `.env`. **The actually-working config**, confirmed live and used by every
-agent in this repo, is direct on-demand models called in `ap-southeast-1`:
-
-```
-AWS_DEFAULT_REGION=ap-southeast-1
-BEDROCK_MODEL=anthropic.claude-3-haiku-20240307-v1:0
-BEDROCK_SONNET_MODEL=anthropic.claude-3-5-sonnet-20240620-v1:0
-```
+**Why these specific model ids:** this AWS org has a Service Control Policy
+that restricts Bedrock to `ap-southeast-1` only. Claude Haiku 4.5 / Sonnet 4.5
+exist here only as cross-region inference profiles (`us.*`/`global.*`/
+`apac.*`), which the SCP denies regardless of the region set in `.env` — so
+don't reach for those ids. The on-demand ids above are confirmed working
+directly in `ap-southeast-1` and are what every agent in this repo uses.
 
 If you ever change these, re-verify with a raw CLI call first (see
-`SETUP.md` §3) — it's faster to debug than through the app.
+`SETUP.md` §3) — it's faster to debug than through the app. AWS SSO sessions
+also expire (check with `aws sts get-caller-identity --profile workshop`
+before a demo) — re-run `aws sso login --profile workshop` if it's stale.
 
 **Cost discipline** (real budget: $20 hard cap, team-wide, does not reset):
 avoid OpenSearch, SageMaker real-time endpoints, NAT Gateways, load

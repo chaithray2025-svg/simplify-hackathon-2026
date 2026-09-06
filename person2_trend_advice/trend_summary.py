@@ -25,11 +25,20 @@ load_dotenv()
 MODEL_ID = os.environ.get("BEDROCK_MODEL", "anthropic.claude-3-haiku-20240307-v1:0")
 REGION = os.environ.get("AWS_DEFAULT_REGION", "ap-southeast-1")
 
-model = ChatBedrockConverse(
-    model=MODEL_ID,
-    temperature=0,
-    region_name=REGION,
-)
+# Built lazily, on first real call — see advice_agent.py's _get_model() for why
+# (eager construction crashed on import whenever AWS creds weren't fresh).
+_model = None
+
+
+def _get_model():
+    global _model
+    if _model is None:
+        _model = ChatBedrockConverse(
+            model=MODEL_ID,
+            temperature=0,
+            region_name=REGION,
+        )
+    return _model
 
 SYSTEM_PROMPT = """You are writing one sentence for a small business owner's weekly review brief.
 You will be given a topic, the weekly mention counts behind it, and a few sample quotes.
@@ -46,7 +55,7 @@ Sample quotes:
 {chr(10).join('- ' + q['quote'] for q in trend_flag['supporting_quotes'][:3])}
 """
 
-    response = model.invoke([
+    response = _get_model().invoke([
         ("system", SYSTEM_PROMPT),
         ("human", user_content),
     ])

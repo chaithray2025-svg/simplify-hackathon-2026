@@ -36,14 +36,27 @@ BEDROCK_MODEL = os.environ.get(
     "BEDROCK_MODEL", "anthropic.claude-3-haiku-20240307-v1:0"
 )
 
-_session = boto3.Session(profile_name=AWS_PROFILE, region_name=AWS_REGION)
-_client = _session.client("bedrock-runtime")
+# Built lazily, on first real call — NOT at import time. Building this eagerly
+# meant `import reply_drafting` (and therefore `import orchestration`) crashed
+# with botocore.exceptions.ProfileNotFound the instant AWS_PROFILE didn't match
+# a configured profile (e.g. expired 12h SSO session, or just running `pytest`
+# / exploring the code with no AWS set up at all) — before any Bedrock call was
+# even attempted. Mirrors person1_extraction_agent/bedrock_client.py's pattern.
+_client = None
+
+
+def _get_client():
+    global _client
+    if _client is None:
+        session = boto3.Session(profile_name=AWS_PROFILE, region_name=AWS_REGION)
+        _client = session.client("bedrock-runtime")
+    return _client
 
 
 def ask_claude(prompt: str, system: str = "You are a helpful assistant.", max_tokens: int = 512) -> str:
     """Send one prompt to Claude via Bedrock, return the text reply."""
     try:
-        response = _client.converse(
+        response = _get_client().converse(
             modelId=BEDROCK_MODEL,
             messages=[{"role": "user", "content": [{"text": prompt}]}],
             system=[{"text": system}],

@@ -39,7 +39,7 @@ TOPIC_EMOJI = {
     "wait_time": "⏱️",
     "food_quality": "🍽️",
     "cleanliness": "🧼",
-    "staff_friendliness": "🙂",
+    "staff_attitude": "🙂",
 }
 
 # Characters that need escaping for Telegram's legacy "Markdown" parse mode.
