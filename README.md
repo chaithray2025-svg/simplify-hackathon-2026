@@ -17,12 +17,12 @@ Five agents, ending in one weekly message. The owner still decides.
 | Step | Agent | What it does | Model |
 |---|---|---|---|
 | 1 | **Extraction** | Raw review (EN/中文/தமிழ்/Malay) → topic, sentiment, dish, staff role, time of day | Haiku |
-| 2 | **Trend Detection** | Counts negative mentions per topic per week; flags only when a topic rises 3+ consecutive weeks | Python (deterministic) + Haiku for the summary line |
+| 2 | **Trend Detection** | Counts negative mentions per topic per week; flags a topic as **accelerating** (rises 3+ consecutive weeks) or **chronic** (persistently frequent, even if flat or noisy) | Python (deterministic) + Haiku for the summary line |
 | 3 | **Advice** | Turns a flagged trend into one fix naming a time, role, or dish — never "improve service" | Sonnet |
 | 4 | **Reply Drafting** | Drafts a reply in the customer's own language | Haiku |
 | 5 | **Telegram** | One weekly message; owner taps Approve/Reject, every tap logged | Telegram Bot API |
 
-**The differentiator:** acceleration, not volume. A topic that's frequent-but-flat, or spiky with no slope, stays quiet. The owner only hears about what's *building*.
+**The differentiator:** two independent signals, not one. **Accelerating** catches a topic that's rising three straight weeks — the owner hears what's *building*. **Chronic** catches a topic that's been steadily bad for weeks without necessarily worsening — the owner hears what's been *ignored*, not just what's loudest right now. A topic that's frequent-but-flat no longer stays silent by default; it surfaces as chronic instead. Only a truly quiet, low-volume topic stays out of the weekly message.
 
 ## Architecture & ownership
 
@@ -96,6 +96,8 @@ pytest person1_extraction_agent/tests/ -v         # schema validation
 
 These back the numbers in the pitch deck: 22/22 extracted records pass schema validation, 22 unit tests pass across both suites (including the two-simultaneous-trends stress case and the W09/W10 chronological-sort edge case).
 
+> Note: `tests/test_trend_detection.py` now covers 20 assertions, including chronic-detection cases (a persistent-but-flat `portion_size` topic was added to the fake dataset alongside the original accelerating `wait_time` example) — pitch-deck numbers above reflect the count as of the last full run and should be re-verified if the suite grows further before the demo.
+
 The full pipeline (extraction → trend → advice → reply → Telegram) makes live Bedrock calls and is demoed via recorded footage rather than live, to avoid venue wifi/latency risk.
 
 ## Current status
@@ -107,5 +109,6 @@ The full pipeline (extraction → trend → advice → reply → Telegram) makes
 ## Roadmap
 
 - Wire the full end-to-end pipeline (raw review → Telegram) into one runnable path.
+- Validate the chronic-detection threshold (currently 2.5 avg mentions/week over 3 weeks) against real extracted data rather than the fake dataset it was tuned against.
 - Price advice against runway (e.g. "one extra lunch runner costs ~$600/month against your $18k fixed costs").
 - Additional review sources, a reverse rule that catches what's *improving*, multi-outlet view for small chains.

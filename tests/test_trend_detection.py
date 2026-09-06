@@ -1,12 +1,8 @@
 """
 tests/test_trend_detection.py
 
-Automated tests for the acceleration rule (person2_trend_advice/trend_detection.py).
-Previously this logic was only checked by eyeballing printed output from
-trend_detection.py's __main__ block ("sanity check — topics NOT flagged...").
-These are the same cases, turned into real assertions pytest can run in CI
-or before a demo, so a broken rule fails loudly instead of needing a human
-to notice a missing line in console output.
+Automated tests for the acceleration rule and the chronic rule
+(person2_trend_advice/trend_detection.py).
 
 Run with: uv run pytest tests/test_trend_detection.py -v
 (or: pytest tests/test_trend_detection.py -v, from the folder containing
@@ -15,7 +11,12 @@ trend_detection.py)
 
 import pytest
 
-from trend_detection import count_by_topic_week, detect_acceleration, find_trend_flags
+from trend_detection import (
+    count_by_topic_week,
+    detect_acceleration,
+    detect_chronic,
+    find_trend_flags,
+)
 
 
 # --- detect_acceleration: the core rule, tested directly on counts ----------
@@ -95,6 +96,73 @@ def test_week_string_sorting_is_chronological_not_alphabetical():
     assert detail["weeks"] == ["2026-W09", "2026-W10", "2026-W11"]
 
 
+# --- detect_chronic: the persistence rule, tested directly on counts --------
+
+def test_chronic_flags_flat_but_frequent_complaints():
+    """The exact case detect_acceleration() is designed to ignore: same
+    count every week, never rising. Should flag as chronic."""
+    counts = {"2026-W33": 5, "2026-W34": 5, "2026-W35": 5}
+    flagged, detail = detect_chronic(counts)
+    assert flagged is True
+    assert detail["average"] == 5.0
+
+
+def test_chronic_flags_noisy_but_persistently_bad():
+    """Non-monotonic counts that never accelerate but stay above threshold
+    on average should still flag as chronic."""
+    counts = {"2026-W33": 3, "2026-W34": 2, "2026-W35": 3}
+    flagged, detail = detect_chronic(counts, min_avg_mentions=2.5)
+    assert flagged is True
+    assert round(detail["average"], 2) == 2.67
+
+
+def test_chronic_does_not_flag_below_threshold():
+    """Infrequent complaints, even if steady, shouldn't trip the chronic
+    flag — mirrors detect_acceleration() ignoring single mentions."""
+    counts = {"2026-W33": 1, "2026-W34": 1, "2026-W35": 1}
+    flagged, _ = detect_chronic(counts)
+    assert flagged is False
+
+
+def test_chronic_requires_minimum_history():
+    """Fewer than window_weeks of data shouldn't be enough to call something
+    'chronic' — you need sustained history, not one good/bad week."""
+    counts = {"2026-W34": 5, "2026-W35": 5}
+    flagged, detail = detect_chronic(counts, window_weeks=3)
+    assert flagged is False
+    assert detail is None
+
+
+def test_chronic_uses_only_most_recent_window():
+    """An old bad patch that has since resolved shouldn't count — only the
+    most recent `window_weeks` matter, mirroring detect_acceleration()'s
+    'only the most recent window' behavior."""
+    counts = {
+        "2026-W30": 8, "2026-W31": 8,                  # old bad patch, since resolved
+        "2026-W33": 1, "2026-W34": 1, "2026-W35": 1,    # now fine
+    }
+    flagged, detail = detect_chronic(counts, window_weeks=3)
+    assert flagged is False
+
+
+def test_chronic_boundary_at_exact_threshold():
+    """Average exactly equal to min_avg_mentions should flag (>=, not >)."""
+    counts = {"2026-W33": 3, "2026-W34": 3, "2026-W35": 3}
+    flagged, detail = detect_chronic(counts, min_avg_mentions=3.0)
+    assert flagged is True
+    assert detail["average"] == 3.0
+
+
+def test_topic_can_be_both_accelerating_and_chronic():
+    """A topic that's been bad for weeks AND is now getting worse should be
+    detectable by both rules independently — they're not mutually exclusive."""
+    counts = {"2026-W33": 3, "2026-W34": 4, "2026-W35": 6}
+    accel_flagged, _ = detect_acceleration(counts)
+    chronic_flagged, _ = detect_chronic(counts, min_avg_mentions=3.0)
+    assert accel_flagged is True
+    assert chronic_flagged is True
+
+
 # --- count_by_topic_week: grouping logic -------------------------------------
 
 def test_count_by_topic_week_groups_correctly():
@@ -108,6 +176,46 @@ def test_count_by_topic_week_groups_correctly():
     assert counts["wait_time"]["2026-W33"] == 2
     assert counts["wait_time"]["2026-W34"] == 1
     assert counts["cleanliness"]["2026-W33"] == 1
+
+
+def test_positive_sentiment_mentions_are_not_counted():
+    """A topic that's mostly praised shouldn't accelerate- or chronic-flag
+    just because people keep mentioning it favorably. Missing `sentiment`
+    still defaults to counted (negative), for backward compatibility with
+    fixtures/data that predate the sentiment field."""
+    reviews = [
+        {"topic": "food_quality", "week": "2026-W33", "sentiment": "positive", "quote": "great laksa", "date": "2026-08-15"},
+        {"topic": "food_quality", "week": "2026-W34", "sentiment": "positive", "quote": "still great", "date": "2026-08-22"},
+        {"topic": "food_quality", "week": "2026-W35", "sentiment": "positive", "quote": "amazing again", "date": "2026-08-29"},
+        # one real complaint mixed into the same topic/weeks
+        {"topic": "food_quality", "week": "2026-W35", "sentiment": "negative", "quote": "too salty this time", "date": "2026-08-29"},
+    ]
+    counts = count_by_topic_week(reviews)
+    # only the single negative mention should be counted per week
+    assert counts["food_quality"]["2026-W33"] == 0 or "2026-W33" not in counts["food_quality"]
+    assert counts["food_quality"]["2026-W35"] == 1
+
+    flags = find_trend_flags(reviews)
+    assert flags == [], "positive-sentiment mentions must not produce a trend flag"
+
+
+def test_supporting_quotes_exclude_positive_sentiment_even_when_topic_flags():
+    """If a topic legitimately flags (real negative acceleration), any
+    positive-sentiment review sharing the same topic/week must not leak
+    into supporting_quotes as if it were evidence of the complaint."""
+    reviews = []
+    for week, n in [("2026-W33", 2), ("2026-W34", 3), ("2026-W35", 5)]:
+        for i in range(n):
+            reviews.append({"topic": "wait_time", "week": week, "sentiment": "negative",
+                             "quote": f"slow-{week}-{i}", "date": "2026-08-15"})
+    # a stray positive mention of the same topic in the flagged week
+    reviews.append({"topic": "wait_time", "week": "2026-W35", "sentiment": "positive",
+                     "quote": "actually fast today", "date": "2026-08-29"})
+
+    flags = find_trend_flags(reviews)
+    wait_time_flag = next(f for f in flags if f["topic"] == "wait_time")
+    quotes = {q["quote"] for q in wait_time_flag["supporting_quotes"]}
+    assert "actually fast today" not in quotes
 
 
 # --- find_trend_flags: end-to-end on the planted-trend fixture --------------
@@ -124,7 +232,7 @@ def planted_trend_reviews():
         reviews.append({"topic": "wait_time", "week": "2026-W34", "quote": f"wt34-{i}", "date": "2026-08-22"})
     for i in range(5):
         reviews.append({"topic": "wait_time", "week": "2026-W35", "quote": f"wt35-{i}", "date": "2026-08-29"})
-    # cleanliness: flat, should not flag
+    # cleanliness: flat, should not flag (avg well below chronic threshold too)
     for week in ["2026-W33", "2026-W34", "2026-W35"]:
         reviews.append({"topic": "cleanliness", "week": week, "quote": "clean", "date": "2026-08-15"})
     # food_quality: only 1 mention in latest week, should not flag
@@ -141,6 +249,7 @@ def test_find_trend_flags_flags_only_the_planted_trend(planted_trend_reviews):
     assert "food_quality" not in flagged_topics, "single-mention topic was incorrectly flagged"
 
     wait_time_flag = next(f for f in flags if f["topic"] == "wait_time")
+    assert wait_time_flag["flag_type"] == "accelerating"
     assert wait_time_flag["weekly_counts"] == [2, 3, 5]
     assert len(wait_time_flag["supporting_quotes"]) == 5  # all latest-week (W35) quotes
 
@@ -199,3 +308,52 @@ def test_two_simultaneous_trends_both_detected_independently(two_trend_reviews):
     assert wt_quotes.isdisjoint(oa_quotes)
     assert all(q.startswith("wt-") for q in wt_quotes)
     assert all(q.startswith("oa-") for q in oa_quotes)
+
+
+# --- Stress test: a chronic-only trend alongside an accelerating one --------
+
+@pytest.fixture
+def chronic_and_accelerating_reviews():
+    """One topic that's chronic-only (steady, never accelerating) alongside
+    one that's accelerating-only, plus noise that must stay unflagged.
+    Mirrors the real portion_size (chronic) vs wait_time (accelerating)
+    split added to fake_extracted_reviews.json."""
+    reviews = []
+
+    # wait_time: accelerating (2, 3, 5)
+    for week, n in [("2026-W01", 2), ("2026-W02", 3), ("2026-W03", 5)]:
+        for i in range(n):
+            reviews.append({"topic": "wait_time", "week": week,
+                             "quote": f"wt-{week}-{i}", "date": "2026-01-01"})
+
+    # portion_size: chronic-only (3, 2, 3 — steady, not strictly increasing)
+    for week, n in [("2026-W01", 3), ("2026-W02", 2), ("2026-W03", 3)]:
+        for i in range(n):
+            reviews.append({"topic": "portion_size", "week": week,
+                             "quote": f"ps-{week}-{i}", "date": "2026-01-01"})
+
+    # cleanliness: flat and low, should stay unflagged by both rules
+    for week in ["2026-W01", "2026-W02", "2026-W03"]:
+        reviews.append({"topic": "cleanliness", "week": week, "quote": "clean", "date": "2026-01-01"})
+
+    return reviews
+
+
+def test_chronic_only_topic_flagged_separately_from_accelerating_topic(chronic_and_accelerating_reviews):
+    flags = find_trend_flags(chronic_and_accelerating_reviews, chronic_min_avg_mentions=2.5)
+    by_topic = {f["topic"]: f for f in flags}
+
+    assert "wait_time" in by_topic
+    assert by_topic["wait_time"]["flag_type"] == "accelerating"
+    # wait_time's own average (2,3,5 -> 3.33) also clears the chronic
+    # threshold here — it's genuinely both getting worse AND persistently
+    # above the bar, which is a real and expected combination.
+    assert by_topic["wait_time"]["chronic_also"] is True
+
+    assert "portion_size" in by_topic
+    assert by_topic["portion_size"]["flag_type"] == "chronic"
+    assert by_topic["portion_size"]["chronic_also"] is False
+    # chronic evidence spans the whole window, not just the latest week
+    assert len(by_topic["portion_size"]["supporting_quotes"]) == 3 + 2 + 3
+
+    assert "cleanliness" not in by_topic

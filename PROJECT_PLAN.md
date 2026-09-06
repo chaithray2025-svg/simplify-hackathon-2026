@@ -107,9 +107,19 @@ Not a "loop" agent — one call in, one structured object out.
 
 ## Agent 2 — Trend Detection Agent (Track B, Person 2)
 
-**What it does:** looks at extracted records grouped by week, applies the
-acceleration rule (3+ weeks increasing, min 2 mentions latest week), outputs
-Trend Flag records.
+**What it does:** looks at extracted records grouped by week, and runs two
+independent rules per topic:
+- **Accelerating** — strictly increasing count across 3+ weeks, min 2
+  mentions latest week. Catches what's *getting worse*.
+- **Chronic** — average weekly count over the last 3 weeks at or above a
+  threshold (currently 2.5/week), regardless of direction. Catches what's
+  *persistently bad but flat or noisy* — the case the acceleration rule is
+  designed to ignore (e.g. a complaint sitting at 3, 2, 3 every week).
+
+A topic can flag as accelerating only, chronic only, or both (accelerating
+takes the primary label in that case, since it's more time-sensitive, with
+`chronic_also=True` kept so Advice doesn't lose that context). Output is a
+Trend Flag record tagged with `flag_type`.
 
 **Model:** Haiku is enough — closer to a counting task than a reasoning
 task, so most of the logic is plain Python, not the LLM.
@@ -117,37 +127,51 @@ task, so most of the logic is plain Python, not the LLM.
 **Steps:**
 1. Counting logic in code, not in the prompt: group extracted records by
    topic + ISO week, count mentions per week.
-2. Apply the rule in Python (strictly increasing across 3+ weeks, ≥2
-   mentions latest week) — deterministic and cheap, not left to the LLM to
-   "decide."
+2. Apply both rules in Python (deterministic and cheap, not left to the
+   LLM to "decide"):
+   - Acceleration: strictly increasing across 3+ weeks, ≥2 mentions
+     latest week.
+   - Chronic: average ≥ threshold over the most recent 3-week window.
 3. Only call the LLM once you have a candidate trend — ask it to write a
-   one-sentence, human-readable summary of the trend (e.g. "Complaints about
-   wait time have risen for 3 consecutive weeks") using the counts as input.
-   Small, cheap call.
+   one-sentence, human-readable summary, phrased differently depending on
+   `flag_type` (e.g. "risen for 3 consecutive weeks" for accelerating vs.
+   "stayed frequent for the past 3 weeks" for chronic). Small, cheap call.
 4. Output a Trend Flag record matching `SCHEMA.md`, including the actual
    review quotes/dates behind it (pulled from the extracted records
-   directly — don't ask the LLM to invent them).
+   directly — don't ask the LLM to invent them). For accelerating flags,
+   quotes come from the latest week; for chronic-only flags, quotes are
+   pulled from the whole window, since the evidence is the sustained
+   pattern rather than a single spike week.
 
 Mostly deterministic code with one small LLM call at the end for the
 human-readable framing.
+
+**Open question, not yet resolved:** the chronic threshold (2.5/week over 3
+weeks) is a judgment call, unlike the acceleration rule which has no free
+parameter. It's tuned to work against the current ~26-review fake dataset;
+it should be revisited once real extracted data exists.
 
 ---
 
 ## Agent 3 — Advice Agent (Track B, Person 2)
 
 **What it does:** takes a Trend Flag, produces one specific, actionable fix.
+Works the same way regardless of `flag_type` — an accelerating and a
+chronic trend both get one equally concrete fix; the flag type only informs
+the model's framing of urgency, not how careful the advice needs to be.
 
 **Model:** Sonnet — this is the reasoning step where "staff the 12:00–13:30
 slot" vs. "improve service" is the whole differentiator, worth the extra
 cost here.
 
 **Steps:**
-1. System prompt with 2–3 few-shot examples of good vs. bad advice — this is
-   exactly a case where few-shot beats zero-shot, because "specific and
-   actionable" is a formatting convention, not something a description alone
-   reliably produces.
-2. Input: the Trend Flag (topic, weeks, mention counts, sample review quotes
-   with timestamps).
+1. System prompt with few-shot examples of good vs. bad advice, covering
+   both flag types (e.g. an accelerating `wait_time` example and a chronic
+   `portion_size` example) — this is exactly a case where few-shot beats
+   zero-shot, because "specific and actionable" is a formatting convention,
+   not something a description alone reliably produces.
+2. Input: the Trend Flag (topic, flag_type, weeks, mention counts, sample
+   review quotes with timestamps).
 3. Output: one sentence of advice, plus a boolean/score checked in code
    afterward — does it contain a specific time, staff role, or menu item? If
    not, it fails the actionability bar and should be flagged, not shipped.

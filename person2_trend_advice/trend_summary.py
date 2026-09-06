@@ -4,6 +4,10 @@ Trend Detection Agent — Step 2: plain-English summary via Bedrock Haiku.
 Takes a flagged trend (from trend_detection.py) and asks Haiku to write
 one clear sentence for the owner's Telegram brief. Single call,
 temperature=0, no tools — this is not a reasoning task, just formatting.
+
+Phrasing differs by flag_type: an "accelerating" trend is framed as
+getting worse over N weeks; a "chronic" trend is framed as a persistent,
+steady issue over N weeks (since chronic counts aren't necessarily rising).
 """
 
 import os
@@ -41,14 +45,24 @@ def _get_model():
     return _model
 
 SYSTEM_PROMPT = """You are writing one sentence for a small business owner's weekly review brief.
-You will be given a topic, the weekly mention counts behind it, and a few sample quotes.
-Write ONE plain-English sentence stating what is getting worse and how many weeks it's been rising.
-Do not invent numbers or details not given to you. Do not add advice — that's a separate step.
-Output ONLY the sentence, nothing else."""
+You will be given a topic, its flag type, the weekly mention counts behind it, and a few sample quotes.
+
+The flag type is one of:
+- "accelerating": write the sentence as something getting WORSE — mention counts have risen for
+  the given number of weeks. Example shape: "Complaints about wait time have risen for 3 consecutive weeks."
+- "chronic": write the sentence as something PERSISTENT — the topic has stayed frequent for the given
+  number of weeks, without implying it's still worsening. Example shape: "Complaints about portion size
+  have stayed frequent for the past 3 weeks."
+
+Write ONE plain-English sentence matching the flag type. Do not invent numbers or details not given to
+you. Do not add advice — that's a separate step. Output ONLY the sentence, nothing else."""
 
 
 def summarize_trend(trend_flag):
+    flag_type = trend_flag.get("flag_type", "accelerating")
+
     user_content = f"""Topic: {trend_flag['topic']}
+Flag type: {flag_type}
 Weeks: {trend_flag['weeks']}
 Weekly mention counts: {trend_flag['weekly_counts']}
 Sample quotes:
@@ -78,5 +92,5 @@ if __name__ == "__main__":
 
     for flag in flags:
         summary = summarize_trend(flag)
-        print(f"Topic: {flag['topic']}")
+        print(f"Topic: {flag['topic']} [{flag['flag_type']}]")
         print(f"Summary: {summary}\n")

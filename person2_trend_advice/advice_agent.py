@@ -6,6 +6,13 @@ reasoning step, not a formatting step. Few-shot examples do the heavy
 lifting here: they teach the model the DIFFERENCE between generic
 advice and specific advice, which a plain instruction alone won't
 reliably produce.
+
+Handles both flag types from trend_detection.py:
+  - "accelerating": something getting worse over recent weeks
+  - "chronic":       something persistently bad but not currently worsening
+The fix itself must be equally specific and actionable either way — the
+flag_type only changes how the model should understand urgency/framing,
+not how careful the advice needs to be.
 """
 
 import os
@@ -49,7 +56,14 @@ def _get_model():
     return _model
 
 SYSTEM_PROMPT = """You are an operations advisor for a small F&B business owner in Singapore.
-You will be given a trending complaint topic, the weekly counts behind it, and sample review quotes.
+You will be given a trending complaint topic, its flag type, the weekly counts behind it, and sample review quotes.
+
+The flag type is one of:
+- "accelerating": this complaint has been rising for 3+ consecutive weeks — it is getting worse right now.
+- "chronic": this complaint has stayed frequent week after week without necessarily getting worse — it is a
+  persistent, unresolved issue rather than a fresh spike.
+Use the flag type only to understand the situation. It does NOT change how careful or specific your advice
+needs to be — an accelerating trend and a chronic one both get ONE equally concrete fix.
 
 Your job: write ONE sentence of advice that is SPECIFIC and ACTIONABLE.
 
@@ -63,27 +77,35 @@ Generic advice restates the problem as a goal ("improve service", "train staff b
 Here are examples of the difference:
 
 ---
-Topic: wait_time
+Topic: wait_time (accelerating)
 Quotes: "20 min wait for a table, only two staff on lunch shift", "Waited so long during lunch I almost left"
 BAD: "Improve service speed during busy periods."
 GOOD: "Add one extra staff member to the 12:00-13:30 lunch shift, which is named in the recent complaints."
 ---
-Topic: order_accuracy
+Topic: order_accuracy (accelerating)
 Quotes: "They gave me the wrong noodle dish twice this month", "Order mixed up again, got someone else's food"
 BAD: "Be more careful when preparing orders."
 GOOD: "Add a verbal order read-back step at the kitchen pass before dishes leave for the table."
 ---
-Topic: cleanliness
+Topic: cleanliness (accelerating)
 Quotes: "Tables were sticky and not wiped between customers", "Floor near the entrance was dirty"
 BAD: "Clean the restaurant more often."
 GOOD: "Add a table-wipe-down check after every seating, logged on a checklist near the register."
+---
+Topic: portion_size (chronic)
+Quotes: "Portion feels smaller than before", "Not enough food for the price anymore"
+BAD: "Increase portion sizes."
+GOOD: "Set a fixed scoop size for rice and gravy on this dish so every plate leaves the kitchen the same size."
 ---
 
 Output ONLY the one sentence of advice. No preamble, no explanation."""
 
 
 def generate_advice(trend_flag):
+    flag_type = trend_flag.get("flag_type", "accelerating")
+
     user_content = f"""Topic: {trend_flag['topic']}
+Flag type: {flag_type}
 Weeks: {trend_flag['weeks']}
 Weekly mention counts: {trend_flag['weekly_counts']}
 Sample quotes:
@@ -112,10 +134,12 @@ def is_actionable(advice_text):
     Cheap, deterministic check: does the advice contain a time,
     a staff/role word, or a named item — something concrete?
     This is NOT a replacement for human judgment, just a first-pass filter.
+    Same bar for accelerating and chronic advice — flag_type doesn't
+    loosen the actionability requirement.
     """
     time_pattern = r"\b\d{1,2}(:\d{2})?\s*(am|pm|-)\b|\b\d{1,2}:\d{2}\b"
     role_words = ["staff", "cashier", "waiter", "waitress", "kitchen", "server", "chef", "shift"]
-    process_words = ["checklist", "read-back", "log", "add a", "check"]
+    process_words = ["checklist", "read-back", "log", "add a", "check", "set a", "fixed"]
 
     text_lower = advice_text.lower()
     has_time = bool(re.search(time_pattern, text_lower))
@@ -134,7 +158,7 @@ if __name__ == "__main__":
         passed = is_actionable(advice)
         log_fidelity(item_id=flag["topic"], step="advice_actionability", passed=passed)
 
-        print(f"Topic: {flag['topic']}")
+        print(f"Topic: {flag['topic']} [{flag['flag_type']}]")
         print(f"Advice: {advice}")
         print(f"Actionability check: {'PASS' if passed else 'FAIL - too generic, retry or flag for review'}")
         print()

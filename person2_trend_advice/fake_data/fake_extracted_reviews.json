@@ -21,5 +21,16 @@
   {"review_id": "r016", "business_id": "biz_test", "week": "2026-W03", "topic": "cleanliness", "sentiment": "positive", "entities": ["restroom"], "language": "en", "quote": "Restroom was clean this visit, improvement noticed", "date": "2026-01-20"},
 
   {"review_id": "r017", "business_id": "biz_test", "week": "2026-W01", "topic": "staff_attitude", "sentiment": "negative", "entities": ["cashier"], "language": "en", "quote": "Cashier was a bit curt", "date": "2026-01-03"},
-  {"review_id": "r018", "business_id": "biz_test", "week": "2026-W03", "topic": "staff_attitude", "sentiment": "negative", "entities": ["cashier"], "language": "en", "quote": "Rude cashier again, not the first time", "date": "2026-01-17"}
+  {"review_id": "r018", "business_id": "biz_test", "week": "2026-W03", "topic": "staff_attitude", "sentiment": "negative", "entities": ["cashier"], "language": "en", "quote": "Rude cashier again, not the first time", "date": "2026-01-17"},
+
+  {"review_id": "r019", "business_id": "biz_test", "week": "2026-W01", "topic": "portion_size", "sentiment": "negative", "entities": ["rice"], "language": "en", "quote": "Portion feels smaller than before", "date": "2026-01-05"},
+  {"review_id": "r020", "business_id": "biz_test", "week": "2026-W01", "topic": "portion_size", "sentiment": "negative", "entities": ["rice"], "language": "en", "quote": "Not enough food for the price anymore", "date": "2026-01-06"},
+  {"review_id": "r021", "business_id": "biz_test", "week": "2026-W01", "topic": "portion_size", "sentiment": "negative", "entities": ["gravy"], "language": "en", "quote": "Serving size has shrunk compared to last month", "date": "2026-01-07"},
+
+  {"review_id": "r022", "business_id": "biz_test", "week": "2026-W02", "topic": "portion_size", "sentiment": "negative", "entities": ["rice"], "language": "en", "quote": "Same small portions again this week", "date": "2026-01-13"},
+  {"review_id": "r023", "business_id": "biz_test", "week": "2026-W02", "topic": "portion_size", "sentiment": "negative", "entities": ["rice"], "language": "zh", "quote": "分量还是很少", "date": "2026-01-14"},
+
+  {"review_id": "r024", "business_id": "biz_test", "week": "2026-W03", "topic": "portion_size", "sentiment": "negative", "entities": ["gravy"], "language": "en", "quote": "Portions are still too small for the price", "date": "2026-01-19"},
+  {"review_id": "r025", "business_id": "biz_test", "week": "2026-W03", "topic": "portion_size", "sentiment": "negative", "entities": ["rice"], "language": "ms", "quote": "Masih rasa kurang, macam bulan lepas", "date": "2026-01-20"},
+  {"review_id": "r026", "business_id": "biz_test", "week": "2026-W03", "topic": "portion_size", "sentiment": "negative", "entities": ["rice"], "language": "en", "quote": "Felt underserved for the price again", "date": "2026-01-21"}
 ]
