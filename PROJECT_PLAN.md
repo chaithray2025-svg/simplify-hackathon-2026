@@ -1,14 +1,5 @@
 # Project Plan — Simplify Hackathon 2026
 
-## ⚠️ Known gap: SCHEMA.md doesn't exist yet
-
-This plan (and the agent steps below) repeatedly reference `SCHEMA.md` for the
-Extracted Review Record and Trend Flag record shapes. **That file isn't in the
-repo yet.** Person 1 owns the DynamoDB/S3 schema per the split below — this
-needs to be written and committed before Persons 2 and 3 can build against a
-stable contract. Until then, `person2_trend_advice/fake_data/fake_extracted_reviews.json`
-is the closest thing to a real example of the extracted-record shape.
-
 ## The 3-way split
 
 | Person | Owns | Why this grouping |
@@ -42,23 +33,17 @@ feature. Better to have one person own that chain end-to-end.
 **Day 4**
 - Everyone: integration testing end-to-end, demo video recording, deck assembly
 
-**One thing to lock before splitting:** Person 1 needs to finalize the
-DynamoDB record shape (as `SCHEMA.md`) by end of Day 1 — Persons 2 and 3 are
-both reading/writing against it, so if that contract shifts mid-week it
-breaks both of their work simultaneously. Worth a 15-minute sync before
-everyone scatters.
+**One thing locked before splitting:** Person 1 finalized the DynamoDB record
+shape as `person1_extraction_agent/SCHEMA.md` on Day 1 — Persons 2 and 3 both
+read/write against it, so the contract was frozen early rather than shifting
+mid-week.
 
 ---
 
 ## Step 0 — One-time AWS setup (whole team)
 
-> **This section now matches `SETUP.md` exactly.** Two earlier drafts of this
-> plan are superseded by what's below: one described a `workshop` SSO profile
-> in `ap-southeast-1` before that was confirmed as the actual setup, and a
-> later one described logging in through an IAM Identity Center portal with a
-> `hackathon` profile in `us-east-1` — that flow does not match how this
-> hackathon's account is provisioned. `SETUP.md` is the source of truth; this
-> is the condensed version.
+> This section matches `SETUP.md` exactly — that file is the source of
+> truth if the two ever drift; this is the condensed version.
 
 1. Run `aws configure sso` once per teammate — SSO start URL from the
    hackathon training deck, SSO region `ap-southeast-1`, region
